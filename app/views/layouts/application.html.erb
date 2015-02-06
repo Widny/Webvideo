@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webvideo</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
+</head>
+<body>
+  <script type="text/javascript">
+  var apiKey    = "45131832";
+  var sessionId = "2_MX40NTEzMTgzMn5-MTQyMzE4OTY5OTY4NX5HT2h5b3QzbFhEV1R5WFZhdm1CeVVLUDh-fg";
+  var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9MTI5YWFiNjFkN2M0YWU2YmYzODYxMWRiZWJmZTg3YmI1ODYwNTk5Zjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URXpNVGd6TW41LU1UUXlNekU0T1RZNU9UWTROWDVIVDJoNWIzUXpiRmhFVjFSNVdGWmhkbTFDZVZWTFVEaC1mZyZjcmVhdGVfdGltZT0xNDIzMTg5NzgzJm5vbmNlPTAuMDE1NTk0ODQxNDI1NzUwOTYmZXhwaXJlX3RpbWU9MTQyMzc5NDM3MA==";
+ 
+  var session = OT.initSession(apiKey, sessionId);
+ 
+  session.on("streamCreated", function(event) {
+    session.subscribe(event.stream);
+  });
+ 
+  session.connect(token, function(error) {
+    var publisher = OT.initPublisher();
+    session.publish(publisher);
+  });
+
+
+// <div id="screen_preview"></div>
+ 
+// OT.checkScreenSharingCapability(function(response) {
+//   if(!response.supported || response.extensionRegistered === false) {
+//     // This browser does not support screen sharing.
+//   } else if(response.extensionInstalled === false) {
+//     // Prompt to install the response.extensionRequired extension.
+//   } else {
+//     // Screen sharing is available. Publish the screen.
+//     OT.initPublisher('screen-preview',
+//       {videoSource: 'screen'},
+//       function(error) {
+//         if (error) {
+//           // Look at error.message to see what went wrong.
+//         } else {
+//           session.publish(publisher, function(error) {
+//             if (error) {
+//              // Look error.message to see what went wrong.
+//             }
+//           });
+//         }
+//       }
+//     );
+//   }
+// });
+// </script>
+
+<%= yield %>
+
+</body>
+</html>
