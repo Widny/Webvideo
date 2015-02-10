@@ -4,24 +4,40 @@
   <title>Webvideo</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <link href='http://fonts.googleapis.com/css?family=Concert+One' rel='stylesheet' type='text/css'>
   <%= csrf_meta_tags %>
   <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
+  <script src="js/opentok-layout.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
+ 
+  <header>
+    <h1> WYDNI</h1>
+  </header>
 
+ 
+  
   <div id="error" style="display:none">
       Sorry, your browser does not support webrtc. Please try Firefox or Google Chrome.
+  </div>
+    
+  <div id ="video-container">
+    <div id="others">
+      <h4>Other participants</h4>
     </div>
-    <div id="container">
-      <div id="others">
-        <h4>Other participants</h4>
-      </div>
-      <div id="yours">
-        <h4>Your video stream</h4>
+
+    <div id="yours">
+      <h4>Your stream</h4>
         <div id="publisher"></div>
-      </div>
+          <a href="javascript:resizePublisher()">resize</a> 
+        </div>
       <button id="audio-off">Mute</button>
     </div>
+
+   
+   
+  
+
 
   <%= yield %>
 
@@ -35,21 +51,23 @@
 
   function setupChat() {
   // See http://www.tokbox.com/blog/getting-started-with-opentok-from-0-to-simple-group-video-chat/
-  var sizeOpts = {width: 300, height: 200};
-  var publisher = OT.initPublisher(replacementElementId, sizeOpts);
-  var session = OT.initSession(apiKey, sessionId);
+    var sizeOpts = {width: 944, height: 531};
+    var publisher = OT.initPublisher(replacementElementId, sizeOpts);
+    var session = OT.initSession(apiKey, sessionId); 
 
-  session.addEventListener('sessionConnected', function(e){
-    console.log("session connected");
-    session.publish(publisher);
-    subscribeToStreams(e.streams);
-  });
-  session.addEventListener("streamCreated", function(event) {
-    console.log("stream created");
-    subscribeToStreams(event.streams);
+
+    session.addEventListener('sessionConnected', function(e){
+      console.log("session connected");
+      session.publish(publisher);
+      subscribeToStreams(e.streams);
   });
 
-  session.connect(token);
+    session.addEventListener("streamCreated", function(event) {
+      console.log("stream created");
+      subscribeToStreams(event.streams);
+    });
+
+    session.connect(token);
 
   function subscribeToStreams(streams) {
     for (var i = 0; i < streams.length; i++) {
@@ -64,6 +82,7 @@
       others.appendChild(div);
       console.log("subscribing to stream");
       session.subscribe(streams[i], div.id, sizeOpts);
+      
     }
   }
 
@@ -72,6 +91,15 @@
     publisher.publishAudio(false);
   };
 }
+// $( window ).resize(function() {
+//   $( "#log" ).append( "publisher" );
+// });
+// function resizePublisher() {
+//     var pubElement = document.getElementById('publisher');
+//     pubElement.style.width = "1250px";
+//     pubElement.style.height = "1000px";
+//   }
+
 
 if (OT.checkSystemRequirements() == 1) {
   setupChat();
