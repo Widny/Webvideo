@@ -1,5 +1,7 @@
 This is a video conferencing app that uses otentok gem and WebRTC. 
 
+App is still WIP
+
 Current features 
 - Publisher can publish stream, others can subscribe to same session and stream 
 
@@ -9,9 +11,11 @@ Road map
 * Add screen sharing featires
 * Add firebase api for real time messaging chat
 
+Demo https://floating-crag-6040.herokuapp.com
 
 
 
+******************************************************************
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
