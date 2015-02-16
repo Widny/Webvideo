@@ -9,6 +9,9 @@
   <%= csrf_meta_tags %>
   <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
   <script src="js/opentok-layout.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 <body>
  
@@ -36,6 +39,20 @@
       <button id="audio-off">Mute</button>
     </div>
 
+<div class="example-chat l-demo-container">
+  <header>Firebase Chat Demo</header>
+
+  <div class='example-chat-toolbar'>
+    <label for="nameInput">Username:</label>
+    <input type='text' id='nameInput' placeholder='enter a username...'>
+  </div>
+
+  <ul id='example-messages' class="example-chat-messages"></ul>
+
+  <footer>
+    <input type='text' id='messageInput'  placeholder='Type a message...'>
+  </footer>
+</div>
    
    
   
@@ -45,8 +62,8 @@
 
   <script type="text/javascript">
   var apiKey    = "45131832";
-  var sessionId = "2_MX40NTEzMTgzMn5-MTQyMzE4OTY5OTY4NX5HT2h5b3QzbFhEV1R5WFZhdm1CeVVLUDh-fg";
-  var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9MTI5YWFiNjFkN2M0YWU2YmYzODYxMWRiZWJmZTg3YmI1ODYwNTk5Zjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URXpNVGd6TW41LU1UUXlNekU0T1RZNU9UWTROWDVIVDJoNWIzUXpiRmhFVjFSNVdGWmhkbTFDZVZWTFVEaC1mZyZjcmVhdGVfdGltZT0xNDIzMTg5NzgzJm5vbmNlPTAuMDE1NTk0ODQxNDI1NzUwOTYmZXhwaXJlX3RpbWU9MTQyMzc5NDM3MA==";
+  var sessionId = "2_MX40NTEzMTgzMn5-MTQyNDA5MTk2MDcxM35HMTZmcDhPUHV6YzV5eWM3Q1lzN3MvVkd-fg";
+  var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9NjA2OTY3ZDk1YjgxMWQwZjE2NjRiYjMyZWI0YmIwOGE4N2VjYWU3Mjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URXpNVGd6TW41LU1UUXlOREE1TVRrMk1EY3hNMzVITVRabWNEaFBVSFY2WXpWNWVXTTNRMWx6TjNNdlZrZC1mZyZjcmVhdGVfdGltZT0xNDI0MDkyMDIzJm5vbmNlPTAuNjEyMTAzOTc5Njg1MTI3NiZleHBpcmVfdGltZT0xNDI2NjgzNzk4";
   var replacementElementId = "publisher";
   var others = document.getElementById('others');
 
@@ -110,6 +127,48 @@ if (OT.checkSystemRequirements() == 1) {
   console.log("The client does not support WebRTC.");
   document.getElementById("error").style.display = 'block';
 }
+
+//                      //Firebase
+// //Create a reference to Firebase
+// var messagesRef = new Firebase ('https://amber-heat-9280.firebaseio.com ')
+
+// //Register Dom Elements
+// var messageField = $('#messageInput');
+// var nameField = $('nameInput');
+// var messageList = $('example-messages');
+
+// //Listen for Keypress Event
+// messageField.keypress(function(e) {
+//   if (e.keyCode == 13) {
+//     //Field Values
+//     var username = nameField.val();
+//     var message = messageField.val();
+
+//     //Save Data to Firebase and empty field
+//     messagesRef.push({name:username, text:message });
+//     messageField.val('');
+//   }
+// });
+
+// //Add a callback that is triggered for each chat message.
+// messagesRef.limitToLast(10).on('child_added', function (snapshot) {
+//   //Get Data
+//   var data = snapshot.val();
+//   var username = data.name || "anonymous";
+//   var message = data.text;
+
+//   //Create elements message and sanitize text
+//   var messageElement = $("<li>");
+//   var nameElement = $("<strong class='example-chat-username'></strong")
+//   nameElement.text(username);
+//   messageElement.text(message).prepend(nameElement);
+
+//   //Add message
+//   messageList.append(messageElemet)
+
+//   //Scroll to Botttom of message list
+//   messageList[0].scrollTop = messageList[0].scrollHeight;
+// });
 
  </script>
 
