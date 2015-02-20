@@ -10,7 +10,7 @@ Road map
 * Add screen sharing featires
 * Add firebase api for real time messaging chat
 
-Demo https://floating-crag-6040.herokuapp.com
+Demo https://widny-chat.herokuapp.com/
 
 
 
