@@ -29,6 +29,7 @@
   <div id ="video-container">
     <div id="others">
       <h4>Other participants</h4>
+      <button id="listen">Turn On</button>
     </div>
 
     <div id="yours">
@@ -39,7 +40,7 @@
       <button id="audio-off">Mute</button>
     </div>
 
-<div class="example-chat l-demo-container">
+<!-- <div class="example-chat l-demo-container">
   <header>Firebase Chat Demo</header>
 
   <div class='example-chat-toolbar'>
@@ -51,7 +52,7 @@
 
   <footer>
     <input type='text' id='messageInput'  placeholder='Type a message...'>
-  </footer>
+  </footer> -->
 </div>
    
    
@@ -72,9 +73,10 @@
   function setupChat() {
   // See http://www.tokbox.com/blog/getting-started-with-opentok-from-0-to-simple-group-video-chat/
     var sizeOpts = {width: 944, height: 531};
+
     var publisher = OT.initPublisher(replacementElementId, sizeOpts);
     var session = OT.initSession(apiKey, sessionId); 
-
+    window.session = session
 
     session.addEventListener('sessionConnected', function(e){
       console.log("session connected");
@@ -87,7 +89,37 @@
       subscribeToStreams(event.streams);
     });
 
+    var audio = document.getElementById("listen");
+      session.addEventListener("audioEstablished", function(a) {
+      console.log("audio established");
+      // session.subscribetoAudio(false);
+      session.subscribetoAudio(true);
+    });
+
     session.connect(token);
+
+
+  session.signal(
+  {
+    // to: connection1,
+    data:"hello",
+    type:"textMessage"
+  },
+  function(error) {
+    if (error) {
+      console.log("signal error ("
+                   + error.code
+                   + "): " + error.message);
+    } else {
+      console.log("signal sent.");
+    }
+  }
+);
+
+session.on("signal:textMessage", function(event) {
+ console.log("Signal sent from connection " + event.from.id);
+ // Process the event.data property, if there is any data.
+})
 
   function subscribeToStreams(streams) {
     for (var i = 0; i < streams.length; i++) {
@@ -105,7 +137,8 @@
       
     }
   }
-
+  
+  
   var muteButton = document.getElementById("audio-off");
   muteButton.onclick = function() {
     publisher.publishAudio(false);
@@ -127,6 +160,32 @@ if (OT.checkSystemRequirements() == 1) {
   console.log("The client does not support WebRTC.");
   document.getElementById("error").style.display = 'block';
 }
+
+
+// var messagesRef = new Firebase ('https://amber-heat-9280.firebaseio.com ')
+
+
+//  $('#messageInput').keypress(function (e) {
+//         if (e.keyCode == 13) {
+//           var name = $('#nameInput').val();
+//           var text = $('#messageInput').val();
+//           myDataRef.push({name: name, text: text});
+//           $('#messageInput').val('');
+//         }
+//       });
+//       myDataRef.on('child_added', function(snapshot) {
+//       var message = snapshot.val();
+//       displayChatMessage(message.name, message.text);
+// });
+// function displayChatMessage(name, text) {
+//         $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+//         $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+//       };
+
+
+
+
+
 
 //                      //Firebase
 // //Create a reference to Firebase
