@@ -15,44 +15,31 @@
 </head>
 <body>
  
-  <header>
-    <h1> WYDNI</h1>
-  </header>
+<header>
+  <h1> Widny-Chat </h1>
+</header>
 
- 
   
-  <div id="error" style="display:none">
-      Sorry, your browser does not support webrtc. Please try Firefox or Google Chrome.
-  </div>
+<div id="error" style="display:none">
+    Sorry, your browser does not support webrtc. Please try Firefox or Google Chrome.
+</div>
   
 
-  <div id ="video-container">
-    <div id="others">
-      <h4>Subscriber Stream:</h4>
-      <!-- <button id="listen">Turn On</button> -->
-    </div>
+<div id ="video-container">
 
-    <div id="yours">
-      <h4>Publisher Stream:</h4>
-        <div id="publisher"></div>
-          <!-- <a href="javascript:resizePublisher()">resize</a>  -->
-        </div>
-      <button id="audio-off">Mute</button>
-    </div>
-
-<!-- <div class="example-chat l-demo-container">
-  <header>Firebase Chat Demo</header>
-
-  <div class='example-chat-toolbar'>
-    <label for="nameInput">Username:</label>
-    <input type='text' id='nameInput' placeholder='enter a username...'>
+  <div id="others">
+    <h4>Subscriber Stream:</h4>
+    <!-- <button id="listen">Turn On</button> -->
   </div>
 
-  <ul id='example-messages' class="example-chat-messages"></ul>
+  <div id="yours">
+    <h4>Publisher Stream:</h4>
+      <div id="publisher">
+        <!-- <a href="javascript:resizePublisher()">resize</a>  -->
+      </div>
+    <button id="audio-off">Mute</button>
+  </div>
 
-  <footer>
-    <input type='text' id='messageInput'  placeholder='Type a message...'>
-  </footer> -->
 </div>
    
    
@@ -71,163 +58,90 @@
 
 
   function setupChat() {
-  // See http://www.tokbox.com/blog/getting-started-with-opentok-from-0-to-simple-group-video-chat/
+    // See http://www.tokbox.com/blog/getting-started-with-opentok-from-0-to-simple-group-video-chat/
     var sizeOpts = {width: 944, height: 531};
 
     var publisher = OT.initPublisher(replacementElementId, sizeOpts);
     var session = OT.initSession(apiKey, sessionId); 
     window.session = session
 
+    // Publisher initiates and connects to session and subscribe to session's stream 
     session.addEventListener('sessionConnected', function(e){
       console.log("session connected");
       session.publish(publisher);
       subscribeToStreams(e.streams);
-  });
+    });
 
+    // Other paticipicants can subscribe to session's stream
     session.addEventListener("streamCreated", function(event) {
       console.log("stream created");
       subscribeToStreams(event.streams);
     });
 
+    // Other paricipicants can subscribe to the session's audio
     var audio = document.getElementById("listen");
       session.addEventListener("audioEstablished", function(a) {
       console.log("audio established");
-      // session.subscribetoAudio(false);
       session.subscribetoAudio(true);
     });
 
     session.connect(token);
 
-
-  session.signal(
-  {
-    // to: connection1,
-    data:"hello",
-    type:"textMessage"
-  },
-  function(error) {
-    if (error) {
-      console.log("signal error ("
-                   + error.code
-                   + "): " + error.message);
-    } else {
-      console.log("signal sent.");
-    }
-  }
-);
-
-session.on("signal:textMessage", function(event) {
- console.log("Signal sent from connection " + event.from.id);
- // Process the event.data property, if there is any data.
-})
-
-  function subscribeToStreams(streams) {
-    for (var i = 0; i < streams.length; i++) {
-      // Make sure we don't subscribe to ourself
-      if (streams[i].connection.connectionId == session.connection.connectionId) {
-        return;
+    // Send signal to all subscribers connected to the same sesiion with 
+    // data strings that sends a message or else signal error.
+    session.signal({
+      data:"hello",
+      type:"textMessage"
+      },
+      function(error) {
+        if (error) {
+          console.log("signal error ("
+                       + error.code
+                       + "): " + error.message);
+        } else {
+          console.log("signal sent.");
+        }
       }
-      // Create the div to put the subscriber element in to
-      var div = document.createElement('div');
-      div.setAttribute('id', 'stream' + streams[i].streamId);
-      div.setAttribute('class', 'video-stream');
-      others.appendChild(div);
-      console.log("subscribing to stream");
-      session.subscribe(streams[i], div.id, sizeOpts);
-      
+    );
+
+    session.on("signal:textMessage", function(event) {
+     console.log("Signal sent from connection " + event.from.id);
+     // Process the event.data property, if there is any data.
+    })
+
+    function subscribeToStreams(streams) {
+      for (var i = 0; i < streams.length; i++) {
+        // Make sure we don't subscribe to ourself
+        if (streams[i].connection.connectionId == session.connection.connectionId) {
+          return;
+        }
+        // Create the div to put the subscriber element in to
+        var div = document.createElement('div');
+        div.setAttribute('id', 'stream' + streams[i].streamId);
+        div.setAttribute('class', 'video-stream');
+        others.appendChild(div);
+        console.log("subscribing to stream");
+        session.subscribe(streams[i], div.id, sizeOpts);
+        
+      }
     }
+      
+    var muteButton = document.getElementById("audio-off");
+
+    muteButton.onclick = function() {
+      publisher.publishAudio(false); 
+    };
+
   }
-  
-  
-  var muteButton = document.getElementById("audio-off");
-  muteButton.onclick = function() {
-    publisher.publishAudio(false);
-  };
-}
-// $( window ).resize(function() {
-//   $( "#log" ).append( "publisher" );
-// });
-// function resizePublisher() {
-//     var pubElement = document.getElementById('publisher');
-//     pubElement.style.width = "1250px";
-//     pubElement.style.height = "1000px";
-//   }
 
-
+// if all the requirements are met and browser supports WebRTC, then do the setupChat. 
+// Provides error messgage if WebRTC is not supported. 
 if (OT.checkSystemRequirements() == 1) {
   setupChat();
 } else {
   console.log("The client does not support WebRTC.");
   document.getElementById("error").style.display = 'block';
 }
-
-
-// var messagesRef = new Firebase ('https://amber-heat-9280.firebaseio.com ')
-
-
-//  $('#messageInput').keypress(function (e) {
-//         if (e.keyCode == 13) {
-//           var name = $('#nameInput').val();
-//           var text = $('#messageInput').val();
-//           myDataRef.push({name: name, text: text});
-//           $('#messageInput').val('');
-//         }
-//       });
-//       myDataRef.on('child_added', function(snapshot) {
-//       var message = snapshot.val();
-//       displayChatMessage(message.name, message.text);
-// });
-// function displayChatMessage(name, text) {
-//         $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-//         $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-//       };
-
-
-
-
-
-
-//                      //Firebase
-// //Create a reference to Firebase
-// var messagesRef = new Firebase ('https://amber-heat-9280.firebaseio.com ')
-
-// //Register Dom Elements
-// var messageField = $('#messageInput');
-// var nameField = $('nameInput');
-// var messageList = $('example-messages');
-
-// //Listen for Keypress Event
-// messageField.keypress(function(e) {
-//   if (e.keyCode == 13) {
-//     //Field Values
-//     var username = nameField.val();
-//     var message = messageField.val();
-
-//     //Save Data to Firebase and empty field
-//     messagesRef.push({name:username, text:message });
-//     messageField.val('');
-//   }
-// });
-
-// //Add a callback that is triggered for each chat message.
-// messagesRef.limitToLast(10).on('child_added', function (snapshot) {
-//   //Get Data
-//   var data = snapshot.val();
-//   var username = data.name || "anonymous";
-//   var message = data.text;
-
-//   //Create elements message and sanitize text
-//   var messageElement = $("<li>");
-//   var nameElement = $("<strong class='example-chat-username'></strong")
-//   nameElement.text(username);
-//   messageElement.text(message).prepend(nameElement);
-
-//   //Add message
-//   messageList.append(messageElemet)
-
-//   //Scroll to Botttom of message list
-//   messageList[0].scrollTop = messageList[0].scrollHeight;
-// });
 
  </script>
 
