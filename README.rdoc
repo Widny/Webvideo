@@ -7,7 +7,7 @@ Current features
 
 Road map
 * Fix UI Layout, minimize publisher div
-* Add screen sharing featires
+* Add screen sharing features
 * Add firebase api for real time messaging chat
 
 Demo https://widny-chat.herokuapp.com/
