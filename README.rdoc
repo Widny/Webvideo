@@ -3,11 +3,10 @@ This is a video conferencing app that uses otentok gem and WebRTC.
 App is still WIP
 
 Current features 
-- Publisher can publish stream, others can subscribe to same session and stream 
+- Publisher can publish stream, others can subscribe to same video and audio stream 
 
 Road map
 * Fix UI Layout, minimize publisher div
-* Add audio 
 * Add screen sharing featires
 * Add firebase api for real time messaging chat
 
