@@ -6,32 +6,34 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <link href='//fonts.googleapis.com/css?family=Concert+One' rel='stylesheet' type='text/css'>
   <link href='//fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' type='text/css'>
+  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj">
   <%= csrf_meta_tags %>
   <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
-  <script src="js/opentok-layout.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src='//static.opentok.com/v2/js/opentok.min.js'></script>
   <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <meta name="google-site-verification" content="ss4moOH1DjA2p6BcKwgEsf0nQuTZj_8qFuXNPvA-SNA" />
 </head>
 <body>
  
 <header>
   <h1> Widny-Chat </h1>
 </header>
-
+ 
   
 <div id="error" style="display:none">
     Sorry, your browser does not support webrtc. Please try Firefox or Google Chrome.
 </div>
   
-
+ 
 <div id ="video-container">
-
+ 
   <div id="others">
     <h4>Subscriber Stream:</h4>
     <!-- <button id="listen">Turn On</button> -->
   </div>
-
+ 
   <div id="yours">
     <h4>Publisher Stream:</h4>
       <div id="publisher">
@@ -39,53 +41,59 @@
       </div>
     <button id="audio-off">Mute</button>
   </div>
-
+  <button onclick="chrome.webstore.install()" id="install-button">Add to chrome</button>
+  <div id="screen-preview">
+  </div>
+  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj">
+ 
 </div>
+ 
+ 
    
    
   
-
-
+ 
+ 
   <%= yield %>
-
+ 
   <script type="text/javascript">
   var apiKey    = "45131832";
-  var sessionId = "2_MX40NTEzMTgzMn5-MTQyNDA5MTk2MDcxM35HMTZmcDhPUHV6YzV5eWM3Q1lzN3MvVkd-fg";
-  var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9NjA2OTY3ZDk1YjgxMWQwZjE2NjRiYjMyZWI0YmIwOGE4N2VjYWU3Mjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5URXpNVGd6TW41LU1UUXlOREE1TVRrMk1EY3hNMzVITVRabWNEaFBVSFY2WXpWNWVXTTNRMWx6TjNNdlZrZC1mZyZjcmVhdGVfdGltZT0xNDI0MDkyMDIzJm5vbmNlPTAuNjEyMTAzOTc5Njg1MTI3NiZleHBpcmVfdGltZT0xNDI2NjgzNzk4";
+  var sessionId = "1_MX40NTEzMTgzMn5-MTQyNDk3ODE3MTk5OH5NaEYwK2RKVy9mZXQ5VUpzMjg0d2pZb2Z-fg";
+  var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9YTViMDI4OTQ3YThhZGI0MGQ1MTA1YzQ3ZjFhMmVkMTI4OWJlYTMxZDpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTFfTVg0ME5URXpNVGd6TW41LU1UUXlORGszT0RFM01UazVPSDVOYUVZd0syUktWeTltWlhRNVZVcHpNamcwZDJwWmIyWi1mZyZjcmVhdGVfdGltZT0xNDI0OTc4MTg0Jm5vbmNlPTAuNTg0MDgwODM1MjEyOTg1NCZleHBpcmVfdGltZT0xNDI3NTcwMTUw";
   var replacementElementId = "publisher";
   var others = document.getElementById('others');
-
-
+ 
+ 
   function setupChat() {
     // See http://www.tokbox.com/blog/getting-started-with-opentok-from-0-to-simple-group-video-chat/
     var sizeOpts = {width: 944, height: 531};
-
+ 
     var publisher = OT.initPublisher(replacementElementId, sizeOpts);
     var session = OT.initSession(apiKey, sessionId); 
     window.session = session
-
+ 
     // Publisher initiates and connects to session and subscribe to session's stream 
     session.addEventListener('sessionConnected', function(e){
       console.log("session connected");
       session.publish(publisher);
       subscribeToStreams(e.streams);
     });
-
+ 
     // Other paticipicants can subscribe to session's stream
     session.addEventListener("streamCreated", function(event) {
       console.log("stream created");
       subscribeToStreams(event.streams);
     });
-
+ 
     // Other paricipicants can subscribe to the session's audio
     var audio = document.getElementById("listen");
       session.addEventListener("audioEstablished", function(a) {
       console.log("audio established");
       session.subscribetoAudio(true);
     });
-
+ 
     session.connect(token);
-
+ 
     // Send signal to all subscribers connected to the same sesiion with 
     // data strings that sends a message or else signal error.
     session.signal({
@@ -102,12 +110,12 @@
         }
       }
     );
-
+ 
     session.on("signal:textMessage", function(event) {
      console.log("Signal sent from connection " + event.from.id);
      // Process the event.data property, if there is any data.
     })
-
+ 
     function subscribeToStreams(streams) {
       for (var i = 0; i < streams.length; i++) {
         // Make sure we don't subscribe to ourself
@@ -126,13 +134,21 @@
     }
       
     var muteButton = document.getElementById("audio-off");
-
+ 
     muteButton.onclick = function() {
       publisher.publishAudio(false); 
     };
-
+ 
   }
-
+ 
+// if all the requirements are met and browser supports WebRTC, then do the setupChat. 
+// Provides error messgage if WebRTC is not supported. 
+if (OT.checkSystemRequirements() == 1) {
+  setupChat();
+} else {
+  console.log("The client does not support WebRTC.");
+  document.getElementById("error").style.display = 'block';
+}
 // if all the requirements are met and browser supports WebRTC, then do the setupChat. 
 // Provides error messgage if WebRTC is not supported. 
 if (OT.checkSystemRequirements() == 1) {
@@ -142,7 +158,49 @@ if (OT.checkSystemRequirements() == 1) {
   document.getElementById("error").style.display = 'block';
 }
 
+OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
+  OT.checkScreenSharingCapability(function(response) {
+    response.extensionRequired = true
+    if(!response.supported || response.extensionRegistered === false) {
+      //This browser does not support screen sharing
+      console.log("This browser does not support screen sharing")
+    } else if(chrome.app.isInstalled == false) {
+      // console.log("Prompt to install screen share extension"),     
+      document.getElementById('install-button').onclick = function() {
+       chrome.webstore.install('https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj',
+       successCallback,
+       failureCallback
+       )
+     };
+     function successCallback() {
+       location.reload();
+     }
+ 
+     function failureCallback(error) {
+       alert(error);
+     }
+ 
+    } else {
+      console.log("Screen share is available")
+      OT.initPublisher('screen-preview',
+        {videoSource: 'screen'},
+        function(error) {
+          if (error) {
+            // look at error.message to see what went wrong 
+          } else {
+            session.publish(yours, function(error) {
+              if (error) {
+               //Look  error.message to see what went wrong. 
+              }
+            });
+          }
+        }
+      );
+    }
+ })
  </script>
-
+ 
 </body>
 </html>
+ 
+
