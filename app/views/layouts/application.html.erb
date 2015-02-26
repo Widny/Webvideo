@@ -149,14 +149,6 @@ if (OT.checkSystemRequirements() == 1) {
   console.log("The client does not support WebRTC.");
   document.getElementById("error").style.display = 'block';
 }
-// if all the requirements are met and browser supports WebRTC, then do the setupChat. 
-// Provides error messgage if WebRTC is not supported. 
-if (OT.checkSystemRequirements() == 1) {
-  setupChat();
-} else {
-  console.log("The client does not support WebRTC.");
-  document.getElementById("error").style.display = 'block';
-}
 
 OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
   OT.checkScreenSharingCapability(function(response) {
