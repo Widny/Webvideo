@@ -10,10 +10,15 @@
   <%= csrf_meta_tags %>
   <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
   <script src='//static.opentok.com/v2/js/opentok.min.js'></script>
+  <script src='//static.opentok.com/v2.4/js/opentok.min.js'></script>
   <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <meta name="google-site-verification" content="ss4moOH1DjA2p6BcKwgEsf0nQuTZj_8qFuXNPvA-SNA" />
+  <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
+  <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
+  <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
+  <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
 </head>
 <body>
  
@@ -45,15 +50,18 @@
   <div id="screen-preview">
   </div>
   <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj">
+  <div id="people"></div>
+  <div id="screens"></div>
+  <div id="sub-screen-sharing-container"></div>
+  <div id="screens"></div>
+  <div id="sub-camera-container"></div>
+  <div id="screen-share"></div>
+  <div id="screen-preview"></div>
+
  
 </div>
- 
- 
-   
-   
-  
- 
- 
+
+
   <%= yield %>
  
   <script type="text/javascript">
@@ -152,18 +160,21 @@ if (OT.checkSystemRequirements() == 1) {
 
 OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
   OT.checkScreenSharingCapability(function(response) {
-    response.extensionRequired = true
+    response.extensionRequired = "chrome";
+    response.extensionRegistered = true ;
+    response.extensionInstalled = true;
     if(!response.supported || response.extensionRegistered === false) {
       //This browser does not support screen sharing
-      console.log("This browser does not support screen sharing")
-    } else if(chrome.app.isInstalled == false) {
+      console.log("This browser does not support screen sharing");
+    } else if(chrome.app.isInstalled === false) {
       // console.log("Prompt to install screen share extension"),     
       document.getElementById('install-button').onclick = function() {
        chrome.webstore.install('https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj',
        successCallback,
        failureCallback
-       )
+       );
      };
+      
      function successCallback() {
        location.reload();
      }
@@ -173,14 +184,14 @@ OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
      }
  
     } else {
-      console.log("Screen share is available")
-      OT.initPublisher('screen-preview',
+      console.log("Screen share is available");
+      OT.initPublisher('screens',
         {videoSource: 'screen'},
         function(error) {
           if (error) {
             // look at error.message to see what went wrong 
           } else {
-            session.publish(yours, function(error) {
+            session.publish(screens, function(error) {
               if (error) {
                //Look  error.message to see what went wrong. 
               }
@@ -189,7 +200,46 @@ OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
         }
       );
     }
- })
+ });
+
+var publishOptions = {};
+publishOptions.mirror = false;
+publishOptions.maxResolution = { width: 1920, height: 1080 };
+publishOptions.videoSource = 'screen';
+OT.initPublisher('screens', publishOptions);
+
+session.on('streamCreated', function(event) {
+  var subOptions= {insertMode: 'append'};
+  if (event.stream.videoType === 'screen') {
+    session.subscribe(event.stream, 'screens', subOptions);
+  } else {
+    session.subscribe(event.stream, 'people', subOptions);
+  }
+});
+
+// publisher.on('mediaStopped', function(event) {
+//    // The user clicked stop. 
+// });
+ 
+publisher.on('streamDestroyed', function(event) {
+  if (event.reason === 'mediaStopped') {
+    // User clicked stop sharing
+  } else if (event.reason === 'forceUnpublished') {
+    // A moderator forced the user to stop sharing.
+  }
+});
+
+// session.on('streamCreated', function(event) {
+//   var subOptions = {
+//     appendMode: 'append'
+//   };
+   
+//   var parentElementId = event.stream.videoType === 'screen' ?
+//     'sub-screen-sharing-container' :
+//     'sub-camera-container';
+//   subscriber = session.subscribe(event.stream, parentElement, subOptions);
+// });
+
  </script>
  
 </body>
