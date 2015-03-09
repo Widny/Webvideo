@@ -52,11 +52,11 @@
   <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj">
   <div id="people"></div>
   <div id="screens"></div>
-  <div id="sub-screen-sharing-container"></div>
-  <div id="screens"></div>
-  <div id="sub-camera-container"></div>
-  <div id="screen-share"></div>
-  <div id="screen-preview"></div>
+  <!-- <div id="sub-screen-sharing-container"></div> -->
+  <!-- <div id="screens"></div> -->
+  <!-- <div id="sub-camera-container"></div> -->
+  <!-- <div id="screen-share"></div> -->
+  <!-- <div id="screen-preview"></div> -->
 
  
 </div>
@@ -65,11 +65,15 @@
   <%= yield %>
  
   <script type="text/javascript">
+  
+  
   var apiKey    = "45131832";
   var sessionId = "1_MX40NTEzMTgzMn5-MTQyNDk3ODE3MTk5OH5NaEYwK2RKVy9mZXQ5VUpzMjg0d2pZb2Z-fg";
   var token     = "T1==cGFydG5lcl9pZD00NTEzMTgzMiZzaWc9YTViMDI4OTQ3YThhZGI0MGQ1MTA1YzQ3ZjFhMmVkMTI4OWJlYTMxZDpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTFfTVg0ME5URXpNVGd6TW41LU1UUXlORGszT0RFM01UazVPSDVOYUVZd0syUktWeTltWlhRNVZVcHpNamcwZDJwWmIyWi1mZyZjcmVhdGVfdGltZT0xNDI0OTc4MTg0Jm5vbmNlPTAuNTg0MDgwODM1MjEyOTg1NCZleHBpcmVfdGltZT0xNDI3NTcwMTUw";
   var replacementElementId = "publisher";
   var others = document.getElementById('others');
+
+
  
  
   function setupChat() {
@@ -104,25 +108,25 @@
  
     // Send signal to all subscribers connected to the same sesiion with 
     // data strings that sends a message or else signal error.
-    session.signal({
-      data:"hello",
-      type:"textMessage"
-      },
-      function(error) {
-        if (error) {
-          console.log("signal error ("
-                       + error.code
-                       + "): " + error.message);
-        } else {
-          console.log("signal sent.");
-        }
-      }
-    );
+    // session.signal({
+    //   data:"hello",
+    //   type:"textMessage"
+    //   },
+    //   function(error) {
+    //     if (error) {
+    //       console.log("signal error ("
+    //                    + error.code
+    //                    + "): " + error.message);
+    //     } else {
+    //       console.log("signal sent.");
+    //     }
+    //   }
+    // );
  
-    session.on("signal:textMessage", function(event) {
-     console.log("Signal sent from connection " + event.from.id);
-     // Process the event.data property, if there is any data.
-    })
+    // session.on("signal:textMessage", function(event) {
+    //  console.log("Signal sent from connection " + event.from.id);
+    //  // Process the event.data property, if there is any data.
+    // })
  
     function subscribeToStreams(streams) {
       for (var i = 0; i < streams.length; i++) {
@@ -212,9 +216,9 @@ session.on('streamCreated', function(event) {
   var subOptions= {insertMode: 'append'};
   if (event.stream.videoType === 'screen') {
     session.subscribe(event.stream, 'screens', subOptions);
-  } else {
-    session.subscribe(event.stream, 'people', subOptions);
-  }
+  }// } else {
+  //   session.subscribe(event.stream, 'people', subOptions);
+  // }
 });
 
 // publisher.on('mediaStopped', function(event) {
