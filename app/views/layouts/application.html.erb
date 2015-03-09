@@ -168,6 +168,7 @@ if (OT.checkSystemRequirements() == 1) {
 OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
 
 OT.checkScreenSharingCapability(function(response) {
+  console.log("does this check out");
   response.extensionRequired = "chrome";
   response.extensionRegistered = true ;
   response.extensionInstalled = true;
@@ -193,10 +194,10 @@ OT.checkScreenSharingCapability(function(response) {
 
   } else {
     console.log("Screen share is available");
-    var publishOptions = {};
-    publishOptions.mirror = false;
-    publishOptions.maxResolution = { width: 1920, height: 1080 };
-    publishOptions.videoSource = 'screen';
+    // var publishOptions = {};
+    // publishOptions.mirror = false;
+    // publishOptions.maxResolution = { width: 1920, height: 1080 };
+    // publishOptions.videoSource = 'screen';
 
     var screen_publisher = OT.initPublisher('screens',
       publishOptions,
