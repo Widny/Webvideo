@@ -10,7 +10,6 @@
   <%= csrf_meta_tags %>
   <script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script>
   <script src='//static.opentok.com/v2/js/opentok.min.js'></script>
-  <script src='//static.opentok.com/v2.4/js/opentok.min.js'></script>
   <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -19,6 +18,8 @@
   <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
   <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
   <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
+  <meta name="google-site-verification" content="a1feCVD2cgME3ZJjNhB0yqCdy_uTumunmgyfY62_Lbw" />
+
 </head>
 <body>
  
@@ -194,10 +195,12 @@ OT.registerScreenSharingExtension("chrome", "jgdleghpbefeehaifmlahemhjbepfnoj");
         function(error) {
           if (error) {
             // look at error.message to see what went wrong 
+            console.log(error);
           } else {
-            session.publish(screens, function(error) {
+            session.publish('screens', function(error) {
               if (error) {
                //Look  error.message to see what went wrong. 
+               console.log(error);
               }
             });
           }
@@ -210,7 +213,7 @@ var publishOptions = {};
 publishOptions.mirror = false;
 publishOptions.maxResolution = { width: 1920, height: 1080 };
 publishOptions.videoSource = 'screen';
-OT.initPublisher('screens', publishOptions);
+var publisher = OT.initPublisher('screens', publishOptions);
 
 session.on('streamCreated', function(event) {
   var subOptions= {insertMode: 'append'};
