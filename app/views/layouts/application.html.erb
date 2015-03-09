@@ -11,7 +11,6 @@
   <!-- script src="//static.opentok.com/webrtc/v2.2/js/opentok.min.js" ></script -->
   <script src='//static.opentok.com/v2/js/opentok.min.js'></script>
   <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
-  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <meta name="google-site-verification" content="ss4moOH1DjA2p6BcKwgEsf0nQuTZj_8qFuXNPvA-SNA" />
   <meta name="google-site-verification" content="G6UKg1HG6M0JqIk3N_R8P21wQHxRUV7lUJUbczN8p2M" />
@@ -47,7 +46,6 @@
       </div>
     <button id="audio-off">Mute</button>
   </div>
-  <button onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj')" id="install-button">Add to chrome</button>
   <div id="screen-preview">
   </div>
   <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj">
@@ -178,12 +176,15 @@ OT.checkScreenSharingCapability(function(response) {
     console.log("This browser does not support screen sharing");
   } else if(response.extensionInstalled === false) {
     // Prompt to install the response.extensionRequired extension.
-    document.getElementById('install-button').onclick = function() {
+    var button = $('<button id="install-button">Add to chrome</button>');
+    window.button = button;
+    $('body').append(button);
+    button.click(function() {
      chrome.webstore.install('https://chrome.google.com/webstore/detail/jgdleghpbefeehaifmlahemhjbepfnoj',
-     successCallback,
-     failureCallback
+      successCallback,
+      failureCallback
      );
-   };
+   });
     
    function successCallback() {
      location.reload();
